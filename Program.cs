@@ -9,6 +9,7 @@ namespace csharp_runtime_issue_20210410
     class MouseHook: IDisposable
     {
         private User32.SafeHHOOK? _hookHandle = null;
+        private User32.HookProc? _delegate = null;
         private MouseHook() { }
         public static MouseHook Init()
         {
@@ -19,7 +20,8 @@ namespace csharp_runtime_issue_20210410
 
         private void SetupHook()
         {
-            _hookHandle = User32.SetWindowsHookEx(User32.HookType.WH_MOUSE_LL, HookCallback, default, 0);
+            _delegate = HookCallback;
+            _hookHandle = User32.SetWindowsHookEx(User32.HookType.WH_MOUSE_LL, _delegate, default, 0);
             Win32Error.ThrowLastErrorIfInvalid(_hookHandle, "Failed to set low-level mouse hook");
         }
 
